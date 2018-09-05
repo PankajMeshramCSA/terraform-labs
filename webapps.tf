@@ -18,7 +18,7 @@ resource "azurerm_app_service_plan" "free" {
     location            = "${var.loc}"
     resource_group_name = "${azurerm_resource_group.webapps.name}"
     tags                = "${azurerm_resource_group.webapps.tags}"
-
+    count               = "${length(var.webapplocs)}"
     kind                = "Linux"
     sku {
         tier = "Free"
@@ -31,6 +31,6 @@ resource "azurerm_app_service" "citadel" {
     location            = "${var.loc}"
     resource_group_name = "${azurerm_resource_group.webapps.name}"
     tags                = "${azurerm_resource_group.webapps.tags}"
-
-    app_service_plan_id = "${azurerm_app_service_plan.free.id}"
+    count               = "${length(var.webapplocs)}"
+    app_service_plan_id = "${element(azurerm_app_service_plan.free.*.id, count.index)}"
 }
